@@ -61,9 +61,9 @@ pg.setConfigOption("foreground", "#202020")
 # }
 
 SIGNAL_SPECS = {
-    "ax": {"color": "#e74c3c", "label": "Ax"},
-    "ay": {"color": "#2ecc71", "label": "Ay"},
-    "az": {"color": "#3498db", "label": "Az"},
+        "ax": {"color": "#e74c3c", "label": "Ax", "stats": True},
+        "ay": {"color": "#2ecc71", "label": "Ay", "stats": True},
+        "az": {"color": "#3498db", "label": "Az", "stats": True},
 
     "gx": {"color": "#e74c3c", "label": "Gx", "stats": True},
     "gy": {"color": "#2ecc71", "label": "Gy", "stats": True},
@@ -167,6 +167,15 @@ def decode_gyro(msg):
             "gz": gz / 100000.0,
     }
 
+
+def decode_accel(msg):
+    ax, ay, az = struct.unpack_from("<hhh", msg.data)
+    return {
+            "ax": ax / 100000.0,
+            "ay": ay / 100000.0,
+            "az": az / 100000.0,
+            }
+
 def decode_PTheta(msg):
     pThetax, pThetay, pThetaz = struct.unpack_from("<hhh", msg.data)
     return {
@@ -185,6 +194,7 @@ def decode_PBias(msg):
 
 CAN_DECODERS = {
         0x693: decode_gyro,
+        0x593: decode_accel,
         0x793: decode_PTheta,
         0x7A3: decode_PBias,
 }
