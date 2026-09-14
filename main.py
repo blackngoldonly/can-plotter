@@ -81,6 +81,10 @@ SIGNAL_SPECS = {
     "PBiasX": {"color": "#e74c3c", "label": "PBiasX"},
     "PBiasY": {"color": "#2ecc71", "label": "PBiasY"},
     "PBiasZ": {"color": "#3498db", "label": "PBiasZ"},
+
+    "MagX": {"color": "#e74c3c", "label": "MagX"},
+    "MagY": {"color": "#2ecc71", "label": "MagY"},
+    "MagZ": {"color": "#3498db", "label": "MagZ"},
 }
 
 
@@ -124,6 +128,12 @@ PLOT_SPECS = [
          "title": "PBias",
          "signals": ["PBiasX", "PBiasY", "PBiasZ"],
          "ylabel": "Covariance",
+     },
+
+     {
+         "title": "Mag",
+         "signals": ["MagX", "MagY", "MagZ"],
+         "ylabel": "Magnetometer",
      },
 ]
 
@@ -191,12 +201,21 @@ def decode_PBias(msg):
             "PBiasY": pBiasy / 100000.0,
             "PBiasZ": pBiasz / 100000.0,
     }
+    
+def decode_mag(msg):
+    Magx, Magy, Magz = struct.unpack_from("<hhh", msg.data)
+    return {
+            "MagX": Magx / 100000.0,
+            "MagY": Magy / 100000.0,
+            "MagZ": Magz / 100000.0,
+    }
 
 CAN_DECODERS = {
         0x693: decode_gyro,
         0x593: decode_accel,
         0x793: decode_PTheta,
         0x7A3: decode_PBias,
+        0x333: decode_mag,
 }
 
 # ============================================================
